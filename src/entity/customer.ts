@@ -1,16 +1,19 @@
 import Address from "./address";
 
-class Customer {
-    _id: string;
-    _name: string;
-    _address!: Address;
-    _activate: boolean = false;
+export default class Customer {
+    private _id: string;
+    private _name: string;
+    private _address!: Address;
+    private _activate: boolean = false;
 
     constructor(id: string, name: string) {
         this._id = id;
         this._name = name;
-
         this._validate();
+    }
+
+    get name(): string {
+        return this._name;
     }
 
     _validate() {
@@ -26,6 +29,10 @@ class Customer {
     changeName(name: string) {
         this._name = name;
         this._validate();
+    }
+
+    isActive(): boolean {
+        return this._activate;
     }
 
     activate() {
