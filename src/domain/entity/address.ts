@@ -1,8 +1,8 @@
 export default class Address {
-    _street: string;
-    _number: number;
-    _zip: string;
-    _city: string;
+    private _street: string;
+    private _number: number;
+    private _zip: string;
+    private _city: string;
 
 
     constructor(street: string, number: number, zip: string, city: string) {
@@ -12,6 +12,22 @@ export default class Address {
         this._city = city;
 
         this._validate();
+    }
+
+    get street(): string {
+        return this._street;
+    }
+
+    get number(): number {
+        return this._number;
+    }
+
+    get zip(): string {
+        return this._zip;
+    }
+
+    get city(): string {
+        return this._city;
     }
 
     _validate() {
