@@ -89,4 +89,12 @@ describe("Order Repository unit tests", () => {
 
         expect(order).toStrictEqual(foundOrder);
     });
+
+    it("should throw an error when order is not found", async () => {
+        const orderRepository = new OrderRepository();
+
+        expect(async () => {
+            await orderRepository.find("456ABC");
+        }).rejects.toThrow("Order not found");
+    });
 });
