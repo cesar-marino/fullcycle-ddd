@@ -79,7 +79,7 @@ describe("Order Repository unit tests", () => {
         const product = new Product("123", "Product 1", 100);
         await productRepository.create(product);
 
-        const orderItem = new OrderItem("1", product.name, product.price, product.id, 1);
+        const orderItem = new OrderItem("1", product.name, product.price, product.id, 2);
         const order = new Order("123", customer.id, [orderItem]);
 
         const orderRepository = new OrderRepository();
