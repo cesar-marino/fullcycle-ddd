@@ -133,4 +133,48 @@ describe("Order Repository unit tests", () => {
         expect(orders).toContainEqual(order1);
         expect(orders).toContainEqual(order2);
     });
+
+    it("Should update order", async () => {
+        //test add order item to update
+        const customerRepository = new CustomerRepository();
+        const customer = new Customer("123", "Customer 1");
+        const address = new Address("street 1", 1, "Zipcode 1", "City 1");
+        customer.changeAddress(address);
+        await customerRepository.create(customer);
+
+        const productRepository = new ProductRepository();
+        const product = new Product("123", "Product 1", 100);
+        await productRepository.create(product);
+
+        const orderItem = new OrderItem("1", product.name, product.price, product.id, 2);
+        const order = new Order("123", customer.id, [orderItem]);
+
+        const orderRepository = new OrderRepository();
+        await orderRepository.create(order);
+
+        const orderItem2 = new OrderItem("2", product.name, product.price, product.id, 5);
+        order.addOrderItem(orderItem2);
+
+        await orderRepository.update(order);
+
+        const foundOrder1 = await orderRepository.find(order.id);
+        expect(foundOrder1).toStrictEqual(order);
+
+        //test remove order item to update
+        order.removeOrderItem(orderItem2);
+        await orderRepository.update(order);
+        const foundOrder2 = await orderRepository.find(order.id);
+        expect(foundOrder2).toStrictEqual(order);
+
+        //test change customer to update
+        const customer2 = new Customer("333", "Customer 2");
+        const address2 = new Address("street 2", 2, "Zipcode 2", "City 2");
+        customer2.changeAddress(address2);
+        await customerRepository.create(customer2);
+
+        order.changeCustomer(customer2.id);
+        await orderRepository.update(order);
+        const foundOrder3 = await orderRepository.find(order.id);
+        expect(foundOrder3).toStrictEqual(order);
+    });
 });

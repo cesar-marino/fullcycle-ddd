@@ -1,4 +1,4 @@
-import { where } from "sequelize/types";
+import { or, where } from "sequelize/types";
 import Order from "../../domain/entity/order";
 import OrderItem from "../../domain/entity/order_item";
 import OrderRepositoryInterface from "../../domain/repository/order-repository.interface";
@@ -26,8 +26,47 @@ export default class OrderRepository implements OrderRepositoryInterface {
     );
   }
 
-  update(entity: Order): Promise<void> {
-    throw new Error("Method not implemented.");
+  async update(entity: Order): Promise<void> {
+    await OrderModel.update(
+      {
+        customer_id: entity.customerId,
+        total: entity.total(),
+      },
+      { where: { id: entity.id } }
+    );
+
+    await OrderItemModel.destroy({ where: { order_id: entity.id } });
+
+    entity.items.map(async (item) => {
+      await OrderItemModel.create({
+        id: item.id,
+        order_id: entity.id,
+        product_id: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      });
+    });
+
+
+
+
+    // await order.update(
+    //   {
+    //     customer_id: entity.customerId,
+    //     total: entity.total(),
+    //     items: entity.items.map((item) => ({
+    //       id: item.id,
+    //       name: item.name,
+    //       price: item.name,
+    //       product_id: item.productId,
+    //       quantity: item.quantity,
+    //     })),
+    //   },
+    //   { where: { id: entity.id } }
+    // );
+
+    // const order2 = await OrderModel.findOne({ where: { id: entity.id }, include: [{ model: OrderItemModel }] });
   }
 
   async find(id: string): Promise<Order> {
